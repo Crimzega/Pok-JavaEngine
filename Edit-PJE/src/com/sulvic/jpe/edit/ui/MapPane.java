@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.sulvic.pje.game.map.GameMap;
+import com.sulvic.pje.game.GameMap;
 
 public class MapPane extends JPanel{
 	
