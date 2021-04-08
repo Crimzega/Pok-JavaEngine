@@ -14,7 +14,11 @@ public class GameMap{
 	
 	public static GameMap resize(GameMap map, int width, int height){
 		GameMap newMap = new GameMap(width, height, map.getMainTilemap(), map.getSecondTilemap());
-		
+		for(int y = 0; y < height; y++) for(int x = 0; x < width; x++){
+			boolean flag = x > map.getWidth() - 1 && y > map.getHeight() - 1;
+			newMap.setTile(x, y, flag? map.getTile(x, y): map.getMainTilemap().getDefaultTile());
+			newMap.setPermission(x, y, flag? map.getPermission(x, y): EnumMovePerm.PERM_0C);
+		}
 		return newMap;
 	}
 	

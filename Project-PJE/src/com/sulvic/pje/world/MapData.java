@@ -1,14 +1,18 @@
 package com.sulvic.pje.world;
 
+import java.util.Map;
+
+import com.sulvic.lib.DoubleKeyBasic;
+import com.sulvic.lib.DoubleKeySet;
 import com.sulvic.lib.DoubleValueBasic;
 import com.sulvic.lib.DoubleValueSet;
 import com.sulvic.pje.game.Tilemap;
+import com.sulvic.util.ContentBuilder;
 
-@SuppressWarnings({"unchecked"})
 public class MapData{
 	
 	private final int theHeight, theWidth;
-	private DoubleValueSet<WorldTile, EnumMovePerm>[] theData;
+	private Map<DoubleKeySet<Integer, Integer>, DoubleValueSet<WorldTile, EnumMovePerm>> theDataMap;
 	private DoubleValueSet<Tilemap, Tilemap> theTilemaps;
 	
 	public MapData(Tilemap main, Tilemap second){ this(1, 1, main, second); }
@@ -16,12 +20,15 @@ public class MapData{
 	public MapData(int width, int height, Tilemap main, Tilemap second){
 		theWidth = width;
 		theHeight = height;
-		theData = new DoubleValueSet[width * height];
+		theDataMap = ContentBuilder.newHashMap();
 		theTilemaps = new DoubleValueBasic<Tilemap, Tilemap>(main, second);
-		for(int y = 0; y < height; y++) for(int x = 0; x < width; x++) theData[x + y * width] = new DoubleValueBasic<WorldTile, EnumMovePerm>(main.getDefaultTile(), EnumMovePerm.PERM_0C);
+		for(int y = 0; y < height; y++) for(int x = 0; x < width; x++)
+			theDataMap.put(makePos(x, y), new DoubleValueBasic<WorldTile, EnumMovePerm>(main.getDefaultTile(), EnumMovePerm.PERM_0C));
 	}
 	
-	private DoubleValueSet<WorldTile, EnumMovePerm> getData(int x, int y){ return theData[x + y * theWidth]; }
+	private DoubleKeySet<Integer, Integer> makePos(int x, int y){ return new DoubleKeyBasic<Integer, Integer>(x, y); }
+	
+	private DoubleValueSet<WorldTile, EnumMovePerm> getData(int x, int y){ return theDataMap.get(makePos(x, y)); }
 	
 	public EnumMovePerm[][] getAllPermissions(){
 		EnumMovePerm[][] result = new EnumMovePerm[theHeight][theWidth];
